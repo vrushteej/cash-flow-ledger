@@ -30,7 +30,7 @@ class ReportGenerator:
         if isinstance(timestamp, str):
             try:
                 timestamp = datetime.fromisoformat(timestamp)
-            except:
+            except (ValueError, AttributeError):
                 timestamp = datetime.now()
         
         # Format: "2024-01-15 14:30 | income | $100.00 | salary"

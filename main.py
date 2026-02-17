@@ -166,7 +166,13 @@ def main():
         return
     
     # Create application
-    application = Application.builder().token(config.TELEGRAM_BOT_TOKEN).post_init(post_init).post_shutdown(post_shutdown).build()
+    application = (
+        Application.builder()
+        .token(config.TELEGRAM_BOT_TOKEN)
+        .post_init(post_init)
+        .post_shutdown(post_shutdown)
+        .build()
+    )
     
     # Add command handlers
     application.add_handler(CommandHandler("start", start_command))
