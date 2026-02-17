@@ -81,7 +81,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         parse_mode=constants.ParseMode.HTML
     )
 
-async def add_transaction_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None: 
+async def add_transaction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None: 
     if update.effective_user is None or update.message is None:
         return
 
