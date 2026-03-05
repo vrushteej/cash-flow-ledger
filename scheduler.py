@@ -3,11 +3,12 @@ from telegram.ext import Application, ContextTypes
 from database import Database
 from reports import build_summary
 
-
 async def _scheduled_job(context: ContextTypes.DEFAULT_TYPE) -> None:
-    print("Running scheduled summary", datetime.now(tz))
     database: Database = context.job.data["database"]
     tz = context.job.data["tz"]
+
+    print("Running scheduled summary", datetime.now(tz))
+
     now = datetime.now(tz)
 
     for user_id in database.list_user_ids():
@@ -22,7 +23,6 @@ async def _scheduled_job(context: ContextTypes.DEFAULT_TYPE) -> None:
         if tomorrow.month != now.month:
             monthly = build_summary(database, user_id, "monthly", now)
             await context.bot.send_message(chat_id=user_id, text=monthly)
-
 
 def setup_scheduler(application: Application, database: Database, tz) -> None:
     application.job_queue.run_daily(
