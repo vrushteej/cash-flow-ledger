@@ -101,9 +101,6 @@ async def add_transaction(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 async def weekly_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await _report_command(update, context, "weekly")
 
-async def weekly_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await _report_command(update, context, "weekly")
-
 async def monthly_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await _report_command(update, context, "monthly")
 
@@ -116,6 +113,9 @@ async def report_command(update: Update, context: ContextTypes.DEFAULT_TYPE, per
 
     report = build_report(db, update.effective_user.id, period, _now(tz))
     await update.message.reply_text(report)
+
+async def error_handler(update, context):
+    logger.error("Unhandled exception", exc_info=context.error)
 
 def main():
     if not BOT_TOKEN:
@@ -134,6 +134,7 @@ def main():
     app.add_handler(CommandHandler("weekly", lambda u, c: report_command(u, c, "weekly")))
     app.add_handler(CommandHandler("monthly", lambda u, c: report_command(u, c, "monthly")))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, add_transaction))
+    app.add_error_handler(error_handler)
 
     app.post_init = set_commands
     setup_scheduler(app, db, tz)

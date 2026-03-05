@@ -5,6 +5,7 @@ from reports import build_summary
 
 
 async def _scheduled_job(context: ContextTypes.DEFAULT_TYPE) -> None:
+    print("Running scheduled summary", datetime.now(tz))
     database: Database = context.job.data["database"]
     tz = context.job.data["tz"]
     now = datetime.now(tz)
@@ -29,4 +30,10 @@ def setup_scheduler(application: Application, database: Database, tz) -> None:
         time=time(hour=23, minute=59, tzinfo=tz),
         data={"database": database, "tz": tz},
         name="finance-summary",
+    )
+
+    application.job_queue.run_once(
+        _scheduled_job,
+        30,
+        data={"database": database, "tz": tz},
     )
